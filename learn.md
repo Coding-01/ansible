@@ -3,15 +3,14 @@
 # 安装ansible
 
 ```shell
-# 控制节点(ubuntu24.04)
-rambo@ub24:~$ cat /etc/os-release 
-PRETTY_NAME="Ubuntu 24.04.1 LTS"
-NAME="Ubuntu"
-VERSION_ID="24.04"
-VERSION="24.04.1 LTS (Noble Numbat)"
-VERSION_CODENAME=noble
+# vm配置
+控制节点:2U/4G/80G/Ubuntu24.04.1/172.16.186.134/24
+client1:2U/4G/80G/Ubuntu24.04.1/172.16.186.135/24
+client2:2U/4G/80G/Ubuntu24.04.1/172.16.186.136/24
+client3:2U/4G/80G/Ubuntu25.04/172.16.186.137/24
 
 
+# 控制节点上安装ansible
 rambo@ub24:~$ 
 sudo apt update
 sudo apt install software-properties-common
@@ -51,9 +50,7 @@ rambo@ub24:~$ for i in {5..7};do ssh-copy-id 172.16.186.13$i;done
 # 安装nginx1.26
 
 ```shell
-下班、睡觉不是这一天的结束，是为了明天的你在做准备
-所以你下班和睡觉是明天的开始
-
+在控制节点上先安装我是为了确保在client上安装时更顺利，如果你有现场的安装步骤则可不再控制节点上安装nginx
 
 
 rambo@ub24:~/ansible-project$ cd /usr/local/src/
@@ -140,7 +137,7 @@ rambo@ub24:~/ansible-project$ vim install_nginx.yml
     - name: Start Nginx
       command: "{{ current_link }}/sbin/nginx"
       args:
-        creates: /var/run/nginx.pid   # 简单校验是否已启动
+        creates: /var/run/nginx.pid    # 简单校验是否已启动
 
 
 rambo@ub24:~/ansible-project$ ansible-playbook -i inventories/prod/hosts.yml install_nginx.yml -u rambo -b -K
